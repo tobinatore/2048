@@ -20,6 +20,10 @@ type
     lbl_points: TLabel;
     lbl_highscore: TLabel;
     MainMenu1: TMainMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    MenuItem3: TMenuItem;
+    MenuItem4: TMenuItem;
     procedure btn_resetClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -65,18 +69,39 @@ begin
 
 end;
 
-//____ERZEUGUNG_EINES_NEUEN_SPIELSTEINS___||___GENERATING_NEW_TILE____
-procedure generateNewTile(rounds : Integer);
-var x,y,i,break : Integer;
+//____TEST_OB_FELD_VOLL___||___TESTING_FIELD_FOR_FREE_SPACES____
+function isFull():Boolean;
+var noCellsFree : Boolean;
+    i,j : Integer;
 begin
 
+ noCellsFree := true;
+
+ for i := 1 to 6 do begin
+    for j := 1 to 6 do begin
+     if field[i,j].caption = tile_null.caption then noCellsFree := false;
+    end;
+  end;
+
+ result := noCellsFree;
+
+end;
+
+//____ERZEUGUNG_EINES_NEUEN_SPIELSTEINS___||___GENERATING_NEW_TILE____
+procedure generateNewTile(rounds : Integer);
+var x,y,i : Integer;
+begin
+
+ if isFull() then begin
+   showmessage('Verloren');
+ end
+ else begin
  for i := 1 to rounds do begin
-   break:=0;
+
     repeat
       x := random(6)+1;
       y := random(6)+1;
-      INC(break);
-    until (field[x,y].value = tile_null.value) or (break = 46656);
+    until field[x,y].value = tile_null.value;
 
     field[x,y].value := 2;
     field[x,y].caption := '2';
@@ -84,7 +109,7 @@ begin
 
     drawField();
  end;
-
+end;
 end;
 
 //________ZURÜCKSETZEN___||___RESET________

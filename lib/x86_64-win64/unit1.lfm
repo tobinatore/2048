@@ -1,0 +1,84 @@
+object Form1: TForm1
+  Left = 1134
+  Height = 601
+  Top = 121
+  Width = 741
+  Caption = '2048'
+  ClientHeight = 581
+  ClientWidth = 741
+  Menu = MainMenu1
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  LCLVersion = '1.6.2.0'
+  object btn_reset: TButton
+    Left = 616
+    Height = 25
+    Top = 32
+    Width = 75
+    Caption = 'Reset'
+    OnClick = btn_resetClick
+    OnKeyDown = FormKeyDown
+    TabOrder = 0
+    TabStop = False
+  end
+  object Image1: TImage
+    Left = 24
+    Height = 540
+    Top = 32
+    Width = 540
+  end
+  object grp_points: TGroupBox
+    Left = 576
+    Height = 56
+    Top = 80
+    Width = 145
+    Caption = 'Punkte'
+    ClientHeight = 36
+    ClientWidth = 141
+    TabOrder = 1
+    object lbl_points: TLabel
+      Left = 8
+      Height = 1
+      Top = 8
+      Width = 1
+      Font.Height = -16
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object grp_highscore: TGroupBox
+    Left = 576
+    Height = 56
+    Top = 152
+    Width = 145
+    Caption = 'Highscore'
+    ClientHeight = 36
+    ClientWidth = 141
+    TabOrder = 2
+    object lbl_highscore: TLabel
+      Left = 8
+      Height = 1
+      Top = 8
+      Width = 1
+      Font.Height = -16
+      ParentColor = False
+      ParentFont = False
+    end
+  end
+  object MainMenu1: TMainMenu
+    left = 48
+    top = 21
+    object MenuItem1: TMenuItem
+      Caption = 'Sprache'
+      object MenuItem2: TMenuItem
+        Caption = 'Deutsch'
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Englisch'
+      end
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'Name eingeben'
+    end
+  end
+end

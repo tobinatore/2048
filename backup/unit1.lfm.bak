@@ -4,7 +4,7 @@ object Form1: TForm1
   Top = 121
   Width = 741
   Caption = '2048'
-  ClientHeight = 601
+  ClientHeight = 581
   ClientWidth = 741
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -19,6 +19,7 @@ object Form1: TForm1
     OnClick = btn_resetClick
     OnKeyDown = FormKeyDown
     TabOrder = 0
+    TabStop = False
   end
   object Image1: TImage
     Left = 24
@@ -67,5 +68,17 @@ object Form1: TForm1
   object MainMenu1: TMainMenu
     left = 48
     top = 21
+    object MenuItem1: TMenuItem
+      Caption = 'Sprache'
+      object MenuItem2: TMenuItem
+        Caption = 'Deutsch'
+      end
+      object MenuItem3: TMenuItem
+        Caption = 'Englisch'
+      end
+    end
+    object MenuItem4: TMenuItem
+      Caption = 'Name eingeben'
+    end
   end
 end
