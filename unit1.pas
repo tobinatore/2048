@@ -32,6 +32,7 @@ type
   public
     { public declarations }
   end;
+
   type r_tile = record
     value: Integer;
     caption: String;
@@ -61,7 +62,7 @@ begin
    Form1.Image1.Canvas.Rectangle(x*90,y*90,(x+1)*90,(y+1)*90);
    mx := (x*90+(x+1)*90) Div 2 - 3;
    my := (y*90+(y+1)*90) Div 2 - 5;
-   Form1.Image1.Canvas.TextOut(mx,my,field[y+1,x+1].caption);
+   Form1.Image1.Canvas.TextOut(mx,my,inttostr(field[y+1,x+1].value));
   end;
  end;
 
@@ -72,14 +73,14 @@ end;
 //____TEST_OB_FELD_VOLL___||___TESTING_FIELD_FOR_FREE_SPACES____
 function isFull():Boolean;
 var noCellsFree : Boolean;
-    i,j : Integer;
+    y,x : Integer;
 begin
 
  noCellsFree := true;
 
- for i := 1 to 6 do begin
-    for j := 1 to 6 do begin
-     if field[i,j].caption = tile_null.caption then noCellsFree := false;
+ for y := 1 to 6 do begin
+    for x := 1 to 6 do begin
+     if field[y,x].value = tile_null.value then noCellsFree := false;
     end;
   end;
 
@@ -101,11 +102,11 @@ begin
     repeat
       x := random(6)+1;
       y := random(6)+1;
-    until field[x,y].value = tile_null.value;
+    until field[y,x].value = 0;
 
-    field[x,y].value := 2;
-    field[x,y].caption := '2';
-    field[x,y].color := RGBToColor(230,230,230);
+    field[y,x].value := 2;
+    field[y,x].caption := '2';
+    field[y,x].color := RGBToColor(230,230,230);
 
     drawField();
  end;
@@ -114,16 +115,16 @@ end;
 
 //________ZURÜCKSETZEN___||___RESET________
 procedure reset();
-var i,j :Integer;
+var x,y :Integer;
 begin
 
  points := 0;
 
- for i := 1 to 6 do begin
-    for j := 1 to 6 do begin
-       field[i,j].value := tile_null.value;
-       field[i,j].color := tile_null.color;
-       field[i,j].caption := tile_null.caption;
+ for y := 1 to 6 do begin
+    for x := 1 to 6 do begin
+       field[y,x].value := tile_null.value;
+       field[y,x].color := tile_null.color;
+       field[y,x].caption := tile_null.caption;
     end;
   end;
 
@@ -136,34 +137,156 @@ end;
 
 //________SPIELSTEINE_HOCH___||___TILES_UP________
 procedure onUp();
+var x,y,i: integer;
 begin
- Inc(points);
+
+for x:=1 to 6 do begin
+for y:=1 to 5 do begin
+if (field[y,x].value) = (field[y+1,x].value) then begin
+   field[y,x].value:= field[y,x].value+ field[y+1,x].value;
+   field[y+1,x].value:=0; //erst mit Verschiebung sinnvoll
+end;
+i := y+1;
+while ((field[i-1,x].value) = 0) and (i > 1) do begin
+   field[i-1,x].value:=field[i,x].value;
+   field[i-1,x].color:=field[i,x].color;
+   field[i,x].value:= 0;
+   field[i,x].color:= RGBToColor(255,255,255);//erst mit Verschiebung sinnvoll
+   i -= 1;
+end;
+end;
+end;
+
+for x:=1 to 6 do begin
+for y:=1 to 5 do begin
+if (field[y,x].value) = (field[y+1,x].value) then begin
+   field[y,x].value:= field[y,x].value+ field[y+1,x].value;
+   field[y+1,x].value:=0; //erst mit Verschiebung sinnvoll
+end;
+end;
+end;
+
  generateNewTile(1);
 end;
 
 //________SPIELSTEINE_RUNTER___||___TILES_DOWN________
 procedure onDown();
+var x,y,i: integer;
 begin
+
+for x:=1 to 6 do begin
+for y:=6 downto 2 do begin
+if (field[y,x].value) = (field[y-1,x].value) then begin
+   field[y,x].value:= field[y,x].value+ field[y-1,x].value;
+   field[y-1,x].value:=0; //erst mit Verschiebung sinnvoll
+end;
+end;
+end;
+
+for x:=1 to 6 do begin
+for y:=1 to 5 do begin
+i := y+1;
+while ((field[i,x].value) = 0) and (i < 7) do begin
+   field[i,x].value:=field[i-1,x].value;
+   field[i,x].color:=field[i-1,x].color;
+   field[i-1,x].value:= 0;
+   field[i-1,x].color:= RGBToColor(255,255,255);//erst mit Verschiebung sinnvoll
+   i += 1;
+end;
+end;
+end;
+
+for x:=1 to 6 do begin
+for y:=6 downto 2 do begin
+if (field[y,x].value) = (field[y-1,x].value) then begin
+   field[y,x].value:= field[y,x].value+ field[y-1,x].value;
+   field[y-1,x].value:=0; //erst mit Verschiebung sinnvoll
+end;
+end;
+end;
 
  generateNewTile(1);
 end;
 
 //________SPIELSTEINE_NACH_RECHTS___||___TILES_TO_THE_RIGHT________
 procedure onRight();
+var y,x,i: integer;
 begin
 
- generateNewTile(1);
+ for y:=1 to 6 do begin
+ for x:=6 downto 2 do begin
+ if (field[y,x].value) = (field[y,x+1].value) then begin
+    field[y,x+1].value:=field[y,x].value+ field[y,x+1].value;
+    field[y,x].value:=0; //erst mit Verschiebung sinnvoll
+ end;
+ end;
+ end;
+
+ for y:=1 to 6 do begin
+for x:=5 downto 1 do begin
+ i := x+1;
+ while ((field[y,i].value) = 0) and (i < 7) do begin
+    field[y,i].value:=field[y,i-1].value;
+    field[y,i].color:=field[y,i-1].color;
+    field[y,i-1].value:= 0;
+    field[y,i-1].color:= RGBToColor(255,255,255);//erst mit Verschiebung sinnvoll
+    inc(i);
+ end;
+ end;
+ end;
+
+ for y:=1 to 6 do begin
+ for x:=6 downto 2 do begin
+ if (field[y,x].value) = (field[y,x+1].value) then begin
+    field[y,x+1].value:=field[y,x].value+ field[y,x+1].value;
+    field[y,x].value:=0; //erst mit Verschiebung sinnvoll
+ end;
+ end;
+ end;
+
+  generateNewTile(1);
+
 end;
-//________SPILESTEINE_NACH_LINKS___||___TILES_TO_THE_LEFT________
+//________SPIELESTEINE_NACH_LINKS___||___TILES_TO_THE_LEFT________
 procedure onLeft();
+var y,x,i: integer;
 begin
 
- generateNewTile(1);
-end;
+for y:=1 to 6 do begin
+ for x:=1 to 5 do begin
+ if (field[y,x].value) = (field[y,x+1].value) then begin
+    field[y,x].value:=field[y,x].value+ field[y,x+1].value;
+    field[y,x+1].value:=0; //erst mit Verschiebung sinnvoll
+ end;
+ end;
+ end;
+
+for y:=1 to 6 do begin
+for x:=2 to 6 do begin
+ i := x-1;
+ while ((field[y,i].value) = 0) and (i > 0) do begin
+    field[y,i].value:=field[y,i+1].value;
+    field[y,i].color:=field[y,i+1].color;
+    field[y,i+1].value:= 0;
+    field[y,i+1].color:= RGBToColor(255,255,255);//erst mit Verschiebung sinnvoll
+    i -= 1;
+ end;
+ end;
+ end;
+
+for y:=1 to 6 do begin
+ for x:=1 to 5 do begin
+ if (field[y,x].value) = (field[y,x+1].value) then begin
+    field[y,x].value:=field[y,x].value+ field[y,x+1].value;
+    field[y,x+1].value:=0; //erst mit Verschiebung sinnvoll
+ end;
+ end;
+ end;
+  generateNewTile(1);
+ end;
 
 //________INITIALISIERUNG___||___INITALIZATION________
 procedure TForm1.FormCreate(Sender: TObject);
-var i: Integer;
 begin
 
   Image1.Canvas.Brush.Color := clWhite;
@@ -188,6 +311,8 @@ begin
  reset();
 end;
 
+
+
 //________TASTE_WURDE_GEDRÜCKT___||___KEY_HAS_BEEN_PRESSED________
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
@@ -200,6 +325,8 @@ begin
  end;
 
 end;
+
+
 
 
 //EOF

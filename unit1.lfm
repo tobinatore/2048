@@ -1,11 +1,11 @@
 object Form1: TForm1
-  Left = 1134
-  Height = 601
-  Top = 121
-  Width = 741
+  Left = 1217
+  Height = 643
+  Top = 3
+  Width = 687
   Caption = '2048'
-  ClientHeight = 581
-  ClientWidth = 741
+  ClientHeight = 623
+  ClientWidth = 687
   Menu = MainMenu1
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
@@ -66,8 +66,7 @@ object Form1: TForm1
     end
   end
   object MainMenu1: TMainMenu
-    left = 48
-    top = 21
+    left = 16
     object MenuItem1: TMenuItem
       Caption = 'Sprache'
       object MenuItem2: TMenuItem
