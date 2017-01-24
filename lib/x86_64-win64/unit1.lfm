@@ -1,41 +1,30 @@
 object Form1: TForm1
-  Left = 1217
-  Height = 643
-  Top = 3
-  Width = 687
+  Left = 1078
+  Height = 485
+  Top = 247
+  Width = 620
   Caption = '2048'
-  ClientHeight = 623
-  ClientWidth = 687
+  ClientHeight = 465
+  ClientWidth = 620
   Menu = MainMenu1
   OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   LCLVersion = '1.6.2.0'
-  object btn_reset: TButton
-    Left = 616
-    Height = 25
-    Top = 32
-    Width = 75
-    Caption = 'Reset'
-    OnClick = btn_resetClick
-    OnKeyDown = FormKeyDown
-    TabOrder = 0
-    TabStop = False
-  end
   object Image1: TImage
-    Left = 24
-    Height = 540
-    Top = 32
-    Width = 540
+    Left = 32
+    Height = 360
+    Top = 40
+    Width = 360
   end
   object grp_points: TGroupBox
-    Left = 576
+    Left = 424
     Height = 56
     Top = 80
     Width = 145
     Caption = 'Punkte'
     ClientHeight = 36
     ClientWidth = 141
-    TabOrder = 1
+    TabOrder = 0
     object lbl_points: TLabel
       Left = 8
       Height = 1
@@ -47,14 +36,14 @@ object Form1: TForm1
     end
   end
   object grp_highscore: TGroupBox
-    Left = 576
+    Left = 424
     Height = 56
     Top = 152
     Width = 145
     Caption = 'Highscore'
     ClientHeight = 36
     ClientWidth = 141
-    TabOrder = 2
+    TabOrder = 1
     object lbl_highscore: TLabel
       Left = 8
       Height = 1
@@ -68,16 +57,19 @@ object Form1: TForm1
   object MainMenu1: TMainMenu
     left = 16
     object MenuItem1: TMenuItem
-      Caption = 'Sprache'
+      Caption = 'Farben'
       object MenuItem2: TMenuItem
-        Caption = 'Deutsch'
+        Caption = 'Dunkel'
+        OnClick = MenuItem2Click
       end
-      object MenuItem3: TMenuItem
-        Caption = 'Englisch'
+      object MenuItem4: TMenuItem
+        Caption = 'Default'
+        OnClick = MenuItem4Click
       end
     end
-    object MenuItem4: TMenuItem
-      Caption = 'Name eingeben'
+    object MenuItem3: TMenuItem
+      Caption = 'Reset'
+      OnClick = MenuItem3Click
     end
   end
 end
