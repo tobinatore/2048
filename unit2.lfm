@@ -1,0 +1,65 @@
+object Form2: TForm2
+  Left = 1179
+  Height = 236
+  Top = 175
+  Width = 184
+  Caption = 'Form2'
+  ClientHeight = 236
+  ClientWidth = 184
+  LCLVersion = '1.6.2.0'
+  object LabeledEdit1: TLabeledEdit
+    Left = 40
+    Height = 23
+    Top = 80
+    Width = 80
+    EditLabel.AnchorSideLeft.Control = LabeledEdit1
+    EditLabel.AnchorSideRight.Control = LabeledEdit1
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = LabeledEdit1
+    EditLabel.Left = 40
+    EditLabel.Height = 15
+    EditLabel.Top = 62
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Zielzahl:'
+    EditLabel.ParentColor = False
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 32
+    Height = 25
+    Top = 192
+    Width = 117
+    Caption = 'Übernehmen'
+    ModalResult = 1
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object LabeledEdit2: TLabeledEdit
+    Left = 40
+    Height = 23
+    Top = 136
+    Width = 80
+    EditLabel.AnchorSideLeft.Control = LabeledEdit2
+    EditLabel.AnchorSideRight.Control = LabeledEdit2
+    EditLabel.AnchorSideRight.Side = asrBottom
+    EditLabel.AnchorSideBottom.Control = LabeledEdit2
+    EditLabel.Left = 40
+    EditLabel.Height = 15
+    EditLabel.Top = 118
+    EditLabel.Width = 80
+    EditLabel.Caption = 'Name:'
+    EditLabel.ParentColor = False
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    Left = 34
+    Height = 21
+    Top = 14
+    Width = 105
+    Caption = 'Einstellungen'
+    Font.Height = -16
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+end
