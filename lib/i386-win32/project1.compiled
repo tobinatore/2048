@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Compiler Value="D:\AlleProgramme\lazarus\fpc\3.0.0\bin\i386-win32\fpc.exe" Date="1231857874"/>
-  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq &quot;-FiF:\2048 - Keep Out!\2048-master\lib\i386-win32&quot; -FuD:\AlleProgramme\lazarus\lcl\units\i386-win32\win32 -FuD:\AlleProgramme\lazarus\lcl\units\i386-win32 -FuD:\AlleProgramme\lazarus\components\lazutils\lib\i386-win32 -FuD:\AlleProgramme\lazarus\packager\units\i386-win32 &quot;-FuF:\2048 - Keep Out!\2048-master\&quot; &quot;-FUF:\2048 - Keep Out!\2048-master\lib\i386-win32\&quot; -o2048.exe -dLCL -dLCLwin32 project1.lpr"/>
+  <Params Value=" -MObjFPC -Scghi -O1 -g -gl -WG -l -vewnhibq -FiF:\2048-master\lib\i386-win32 -FuD:\AlleProgramme\lazarus\lcl\units\i386-win32\win32 -FuD:\AlleProgramme\lazarus\lcl\units\i386-win32 -FuD:\AlleProgramme\lazarus\components\lazutils\lib\i386-win32 -FuD:\AlleProgramme\lazarus\packager\units\i386-win32 -FuF:\2048-master\ -FUF:\2048-master\lib\i386-win32\ -o2048.exe -dLCL -dLCLwin32 project1.lpr"/>
+  <Complete Value="False"/>
 </CONFIG>

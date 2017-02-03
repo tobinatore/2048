@@ -4,6 +4,7 @@ unit Unit1;
 
 interface
 
+
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, LCLType,
   StdCtrls, ExtCtrls, Menus;
@@ -25,6 +26,7 @@ type
     MenuItem4: TMenuItem;
     MenuItem5: TMenuItem;
     MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure MenuItem2Click(Sender: TObject);
@@ -32,6 +34,7 @@ type
     procedure MenuItem4Click(Sender: TObject);
     procedure MenuItem5Click(Sender: TObject);
     procedure MenuItem6Click(Sender: TObject);
+    procedure MenuItem7Click(Sender: TObject);
   private
     { private declarations }
   public
@@ -43,9 +46,15 @@ type
     caption: String;
     color : TColor;
   end;
+  type r_highscore = record
+    points : Integer;
+    name : String[50];
+  end;
 
- type a_container = array[1..4,1..4] of r_tile;
- type a_colors = array[0..9000] of TColor;
+ type a_container = array[1..8,1..8] of r_tile;
+ type a_colors = array[0..2048] of TColor;
+
+ type a_highscores = array[1..10] of r_highscore;
 
  var
   Form1: TForm1;
@@ -53,13 +62,17 @@ type
   field: a_container;
   notShown : Boolean;
   colors: a_colors;
-  points,highscore,win : Integer;
+  points,highscore,win, arrSize,lowestScore : Integer;
   name : String;
   sl : TStringList;
+  player : r_highscore;
+
+
+procedure resetGame();
 
 implementation
 
-uses Unit2;
+uses Unit2,Unit3;
 {$R *.lfm}
 
 { TForm1 }
@@ -78,24 +91,17 @@ begin
  result := hasWon;
 end;
 
-procedure Delay(msec: integer);
-var start, stop: LongInt;
-begin
-  start := GetTickCount64;
-  repeat
-    stop := GetTickCount64;
-    Application.ProcessMessages;
-  until (stop-start)>=msec;
-end;
-
 
 //DRAW_FIELD_____________________________
 procedure drawField();
 var x,y,mx,my : Integer;
 begin
 
- for y := 0 to 3 do begin
-  for x := 0 to 3 do begin
+
+
+
+ for y := 0 to arrSize -1 do begin
+  for x := 0 to arrSize -1 do begin
    Form1.Image1.Canvas.Brush.Color := colors[field[y+1,x+1].value];
    Form1.Image1.Canvas.Rectangle(x*90,y*90,(x+1)*90,(y+1)*90);
    mx := (x*90+(x+1)*90) Div 2 - 3;
@@ -124,18 +130,18 @@ begin
  noCellsFree := true;
 
  if simpleCheck = 'n' then begin
- for y := 1 to 4 do begin
-    for x := 1 to 4 do begin
+ for y := 1 to arrSize do begin
+    for x := 1 to arrSize do begin
      if field[y,x].value = tile_null.value then begin
         noCellsFree := false;
      end
-     else if (field[y,x].value=field[y+1,x].value) and (y + 1 < 5)  then begin
+     else if (field[y,x].value=field[y+1,x].value) and (y + 1 < arrSize +1)  then begin
         noCellsFree := false;
      end
      else if (field[y,x].value=field[y-1,x].value) and (y - 1 > 0) then begin
         noCellsFree := false;
      end
-     else if (field[y,x].value=field[y,x+1].value) and (x + 1 < 5) then begin
+     else if (field[y,x].value=field[y,x+1].value) and (x + 1 < arrSize + 1) then begin
         noCellsFree := false;
      end
      else if (field[y,x].value=field[y,x-1].value) and (x - 1 > 0) then begin
@@ -145,8 +151,8 @@ begin
   end;
   end
  else begin
-  for y := 1 to 4 do begin
-    for x := 1 to 4 do begin
+  for y := 1 to arrSize do begin
+    for x := 1 to arrSize do begin
      if field[y,x].value = tile_null.value then begin
         noCellsFree := false;
      end;
@@ -165,15 +171,15 @@ begin
 
  if isFull('n') then begin
    showmessage('Verloren');
-   if points > highscore then begin
-   sl:=TStringList.Create;
-   highscore := points;
-   try
-     sl.Add(IntToStr(points));
-     sl.SaveToFile('highscore.txt');
-   finally
-     sl.free
-   end;
+   if points > lowestScore then begin
+      player.points := points;
+      player.name :=name;
+       if points > highscore then begin
+     Unit3.highscoresList[1] := player;
+     Form1.lbl_highscore.Caption := IntToStr(points);
+     end
+     else Unit3.highscoresList[1] := player;
+     Unit3.saveHighscore();
    end;
  end
  else begin
@@ -183,8 +189,8 @@ begin
     end
   else begin
     repeat
-      x := random(4)+1;
-      y := random(4)+1;
+      x := random(arrSize)+1;
+      y := random(arrSize)+1;
     until field[y,x].value = 0;
 
     spawnFour := random(100)+1;
@@ -205,14 +211,58 @@ end;
 end;
 
 //________ZURÜCKSETZEN___||___RESET________
-procedure reset();
+procedure resetGame();
 var x,y :Integer;
 begin
 
+
  points := 0;
 
- for y := 1 to 4 do begin
-    for x := 1 to 4 do begin
+ case arrSize of
+  3:begin
+    Form1.Height := 339;
+    Form1.Width := 479;
+    Form1.grp_points.Left:= 322;
+    Form1.grp_highscore.Left:= 322;
+  end;
+  4:begin
+    Form1.Height := 426;
+    Form1.Width := 575;
+    Form1.grp_points.Left:= 424;
+    Form1.grp_highscore.Left:= 424;
+  end;
+  5:begin
+    Form1.Height := 517;
+    Form1.Width := 663;
+    Form1.grp_points.Left:= 504;
+    Form1.grp_highscore.Left:= 504;
+  end;
+  6:begin
+    Form1.Height := 612;
+    Form1.Width := 765;
+    Form1.grp_points.Left:= 600;
+    Form1.grp_highscore.Left:= 600;
+  end;
+  7:begin
+    Form1.Height := 702;
+    Form1.Width := 847;
+    Form1.grp_points.Left:= 688;
+    Form1.grp_highscore.Left:= 688;
+  end;
+  8:begin
+    Form1.Height := 788;
+    Form1.Width := 941;
+    Form1.grp_points.Left:= 776;
+    Form1.grp_highscore.Left:= 776;
+  end;
+ end;
+
+
+ Form1.Image1.Height := arrSize * 90;
+ Form1.Image1.Width :=  arrSize * 90;
+
+for y := 1 to arrSize do begin
+    for x := 1 to arrSize do begin
        field[y,x].value := tile_null.value;
        field[y,x].color := tile_null.color;
        field[y,x].caption := tile_null.caption;
@@ -234,8 +284,8 @@ procedure onUp();
 var x,y,i: integer;
 begin
 
-for x:=1 to 4 do begin
-for y:=1 to 3 do begin
+for x:=1 to arrSize do begin
+for y:=1 to arrSize - 1 do begin
 i := y+1;
 while ((field[i-1,x].value) = 0) and (i > 1) do begin
    field[i-1,x].value:=field[i,x].value;
@@ -249,8 +299,8 @@ end;
 end;
 end;
 
-for x:=1 to 4 do begin
-for y:=1 to 3 do begin
+for x:=1 to arrSize do begin
+for y:=1 to arrSize -1  do begin
 if (field[y,x].value) = (field[y+1,x].value) then begin
    field[y,x].value:= field[y,x].value+ field[y+1,x].value;
    points += field[y,x].value;
@@ -263,8 +313,8 @@ end;
 end;
 end;
 
-for x:=1 to 4 do begin
-for y:=1 to 3 do begin
+for x:=1 to arrSize do begin
+for y:=1 to arrSize -1 do begin
 i := y+1;
 while ((field[i-1,x].value) = 0) and (i > 1) do begin
    field[i-1,x].value:=field[i,x].value;
@@ -289,10 +339,10 @@ var x,y,i: integer;
 begin
 
 
-for x:=1 to 4 do begin
-for y:=4 downto 1 do begin
+for x:=1 to arrSize do begin
+for y:=arrSize downto 1 do begin
 i := y+1;
-while ((field[i,x].value) = 0) and (i < 5) do begin
+while ((field[i,x].value) = 0) and (i < arrSize+1) do begin
    field[i,x].value:=field[i-1,x].value;
    field[i,x].color:=field[i-1,x].color;
    field[i-1,x].value:= 0;
@@ -302,8 +352,8 @@ end;
 end;
 end;
 
-for x:=1 to 4 do begin
-for y:=4 downto 2 do begin
+for x:=1 to arrSize do begin
+for y:=arrSize downto 2 do begin
 if (field[y,x].value) = (field[y-1,x].value) then begin
    field[y,x].value:= field[y,x].value+ field[y-1,x].value;
    points += field[y,x].value;
@@ -317,10 +367,10 @@ end;
 end;
 end;
 
-for x:=1 to 4 do begin
-for y:=4 downto 1 do begin
+for x:=1 to arrSize do begin
+for y:=arrSize downto 1 do begin
 i := y+1;
-while ((field[i,x].value) = 0) and (i < 5) do begin
+while ((field[i,x].value) = 0) and (i < arrSize+1) do begin
    field[i,x].value:=field[i-1,x].value;
    field[i,x].color:=field[i-1,x].color;
    field[i-1,x].value:= 0;
@@ -341,10 +391,10 @@ procedure onRight();
 var y,x,i: integer;
 begin
 
- for y:=1 to 4 do begin
-for x:=3 downto 1 do begin
+ for y:=1 to arrSize do begin
+for x:=arrSize-1 downto 1 do begin
  i := x+1;
- while ((field[y,i].value) = 0) and (i < 5) do begin
+ while ((field[y,i].value) = 0) and (i < arrSize+1) do begin
     field[y,i].value:=field[y,i-1].value;
     field[y,i].color:=field[y,i-1].color;
     field[y,i-1].value:= 0;
@@ -354,8 +404,8 @@ for x:=3 downto 1 do begin
  end;
  end;
 
- for y:=1 to 4 do begin
- for x:=3 downto 1 do begin
+ for y:=1 to arrSize do begin
+ for x:=arrSize-1 downto 1 do begin
  if (field[y,x].value) = (field[y,x+1].value) then begin
     field[y,x+1].value:=field[y,x].value+ field[y,x+1].value;
     points += field[y,x+1].value;
@@ -369,10 +419,10 @@ for x:=3 downto 1 do begin
  end;
  end;
 
- for y:=1 to 4 do begin
-for x:=3 downto 1 do begin
+ for y:=1 to arrSize do begin
+for x:=arrSize-1 downto 1 do begin
  i := x+1;
- while ((field[y,i].value) = 0) and (i < 5) do begin
+ while ((field[y,i].value) = 0) and (i < arrSize+1) do begin
     field[y,i].value:=field[y,i-1].value;
     field[y,i].color:=field[y,i-1].color;
     field[y,i-1].value:= 0;
@@ -397,8 +447,8 @@ var y,x,i: integer;
 begin
 
 
-for y:=1 to 4 do begin
-for x:=2 to 4 do begin
+for y:=1 to arrSize do begin
+for x:=2 to arrSize do begin
  i := x-1;
  while (field[y,i].value = 0) and (i > 0) do begin
     field[y,i].value:=field[y,i+1].value;
@@ -410,8 +460,8 @@ for x:=2 to 4 do begin
  end;
  end;
 
-for y:=1 to 4 do begin
- for x:=1 to 3 do begin
+for y:=1 to arrSize do begin
+ for x:=1 to arrSize -1 do begin
  if (field[y,x].value) = (field[y,x+1].value) then begin
     field[y,x].value:=field[y,x].value+ field[y,x+1].value;
     points += field[y,x].value;
@@ -425,8 +475,8 @@ for y:=1 to 4 do begin
  end;
  end;
 
-for y:=1 to 4 do begin
-for x:=2 to 4 do begin
+for y:=1 to arrSize do begin
+for x:=2 to arrSize do begin
  i := x-1;
  while ((field[y,i].value) = 0) and (i > 0) do begin
     field[y,i].value:=field[y,i+1].value;
@@ -488,7 +538,9 @@ begin
   randomize;
   win := 2048;
   name := '';
-  reset();
+  arrSize := 4;
+
+  resetGame();
 
 
  end;
@@ -539,7 +591,7 @@ end;
 //________BENUTZER_SETZT_SPIEL_ZURÜCK___||___USER_RESETS_GAME________
 procedure TForm1.MenuItem3Click(Sender: TObject);
 begin
- reset();
+ resetGame();
 end;
 
 procedure TForm1.MenuItem4Click(Sender: TObject);
@@ -594,6 +646,11 @@ procedure TForm1.MenuItem6Click(Sender: TObject);
 begin
 
  Form2.ShowModal;
+
+end;
+
+procedure TForm1.MenuItem7Click(Sender: TObject);
+begin
 
 end;
 
